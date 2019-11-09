@@ -1,26 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Header from "./components/Header";
+import SearchInput from "./components/SearchInput";
+import EmojiResults from "./components/EmojiResults";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import emojiList from './emojiList.json'
+
+const App = () => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      filteredEmoji: filterEmoji("", 20)
+    };
+  }
+
+  const filterEmoji(searchText, maxResults) {
+    return emojiList
+      .filter(emoji => {
+        if (emoji.title.toLowerCase().includes(searchText.toLowerCase())) {
+          return true;
+        }
+        if (emoji.keywords.includes(searchText)) {
+          return true;
+        }
+        return false;
+      })
+      .slice(0, maxResults);
+  }
+
+  handleSearchChange = event => {
+    this.setState({
+      filteredEmoji: filterEmoji(event.target.value, 20)
+    });
+  };
+
+  render() {
+    return (
+      <div>
+        <Header />
+        <SearchInput textChange={this.handleSearchChange} />
+        <EmojiResults emojiData={this.state.filteredEmoji} />
+      </div>
+    );
+  }
 }
-
-export default App;
