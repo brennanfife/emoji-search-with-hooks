@@ -1,45 +1,24 @@
 import React, { useState } from "react";
 import Header from "./components/Header";
-import SearchInput from "./components/SearchInput";
-import EmojiResults from "./components/EmojiResults";
-
-import emojiList from './emojiList.json'
+import Search from "./components/Search";
+import Results from "./components/Results";
+import filterEmoji from "./filterEmoji";
 
 const App = () => {
-  constructor(props) {
-    super(props);
-    this.state = {
-      filteredEmoji: filterEmoji("", 20)
-    };
-  }
+  const initialState = filterEmoji("", 20)
+  const [filteredEmoji, setFilteredEmoji] = useState(initialState)
 
-  const filterEmoji(searchText, maxResults) {
-    return emojiList
-      .filter(emoji => {
-        if (emoji.title.toLowerCase().includes(searchText.toLowerCase())) {
-          return true;
-        }
-        if (emoji.keywords.includes(searchText)) {
-          return true;
-        }
-        return false;
-      })
-      .slice(0, maxResults);
-  }
-
-  handleSearchChange = event => {
-    this.setState({
-      filteredEmoji: filterEmoji(event.target.value, 20)
-    });
+  const handleSearchChange = event => {
+    setFilteredEmoji(filterEmoji(event.target.value, 20))
   };
 
-  render() {
-    return (
-      <div>
-        <Header />
-        <SearchInput textChange={this.handleSearchChange} />
-        <EmojiResults emojiData={this.state.filteredEmoji} />
-      </div>
-    );
-  }
+  return (
+    <div>
+      <Header />
+      <Search textChange={handleSearchChange} />
+      <Results emojiData={filteredEmoji} />
+    </div>
+  );
 }
+
+export default App
